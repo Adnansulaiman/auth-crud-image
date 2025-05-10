@@ -1,4 +1,8 @@
 const Blog = require("../model/Blog");
+const fs = require('fs');
+const path = require('path');
+
+
 
 // Create blog
 const createBlog = async(req,res)=>{
@@ -34,9 +38,49 @@ const getAllBlogs = async(req,res)=>{
     }
 }
 
+// Update a blog
+const updateBlog = async (req, res) => {
+  const { id } = req.params;
+  const { title, description } = req.body;
+
+  try {
+    const blog = await Blog.findById(id);
+
+    if (!blog) {
+      return res.status(404).json({ message: "Blog not found" });
+    }
+
+    // Update fields
+    blog.title = title || blog.title;
+    blog.description = description || blog.description;
+
+    // If new image is uploaded
+    if (req.file) {
+      // Delete old image from disk
+      const oldImagePath = path.join(__dirname, "../uploads", path.basename(blog.imageUrl));
+      if (fs.existsSync(oldImagePath)) {
+        fs.unlinkSync(oldImagePath);
+      }
+
+      // Save new image path
+      blog.imageUrl = `/uploads/${req.file.filename}`;
+    }
+
+    await blog.save();
+
+    res.status(200).json({
+      message: "Blog updated successfully",
+      blog,
+    });
+  } catch (error) {
+    console.error("Error updating blog:", error);
+    res.status(500).json({ message: "Error updating blog" });
+  }
+};
 
 
 module.exports = {
     createBlog,
-    getAllBlogs
+    getAllBlogs,
+    updateBlog
 }
