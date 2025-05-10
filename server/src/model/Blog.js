@@ -14,7 +14,7 @@ const blogSchema = new mongoose.Schema({
         type:String,
         required:true
     }
-});
+},{timestamps:true});
 
 // Create model
 const Blog = mongoose.model('Blog',blogSchema);
