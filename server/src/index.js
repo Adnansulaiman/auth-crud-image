@@ -16,7 +16,7 @@ app.get('/',(req,res)=>{
 })
 
 // Routes
-app.use('/auth',authRoutes);
+app.use('/api/auth',authRoutes);
 
 
 

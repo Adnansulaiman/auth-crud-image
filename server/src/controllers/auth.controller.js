@@ -6,9 +6,9 @@ const register = async (req, res) => {
   const { name, email, password } = req.body;
   try {
     // Check user already in there
-    const user = await User.findOne(email);
+    const user = await User.findOne({email});
     if (user) {
-      return res.json(400).json({ message: "Email is already exists." });
+      return res.status(400).json({ message: "Email is already exists." });
     }
 
     // Hashing password
@@ -25,7 +25,7 @@ const register = async (req, res) => {
 
     res.status(200).json(newUser);
   } catch (error) {
-    console.error("Error doing register");
+    console.error("Error doing register : ",error);
     res.status(500).json({ message: "Error doing register" });
   }
 };
@@ -34,7 +34,7 @@ const login = async (req, res) => {
   const { email, password } = req.body;
   try {
     // Check user in there
-    const user = await User.findOne(email);
+    const user = await User.findOne({email});
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
@@ -52,7 +52,7 @@ const login = async (req, res) => {
     );
 
     res.status(200).json({message:"Login successfully",token});
-    
+
   } catch (error) {
     console.error("Error doing login");
     res.status(500).json({ message: "Error doing login" });
