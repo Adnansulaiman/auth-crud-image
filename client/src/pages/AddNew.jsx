@@ -6,8 +6,33 @@ import { useState } from "react";
 import useForm from "../hooks/useForm";
 import axios from "axios";
 import { useRef } from "react";
+import { useEffect } from "react";
 
 const AddNew = () => {
+  // Get functionalities
+  const [data, setData] = useState(null);
+  const fetchData = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/blog/get-all`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response.data);
+      setData(response.data);
+    } catch (error) {
+      console.error("Fetch error:", error);
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // Add functionalites
   const fileInputRef = useRef(null);
 
   const [errorMessage, setErrorMessage] = useState("");
@@ -60,6 +85,7 @@ const AddNew = () => {
           fileInputRef.current.value = "";
         }
         setSuccessMessage(response.data.message);
+        fetchData(); //fetch data after adding new one
         setTimeout(() => {
           setSuccessMessage("");
         }, 2000);
@@ -152,24 +178,38 @@ const AddNew = () => {
             </button>
           </form>
         </div>
-        <div className="flex flex-col w-1/2 px-6 ">
+        <div className="flex flex-col w-1/2 px-6 h-[570px] ">
           <h1 className="text-2xl font-bold text-[#515ada]">Your items</h1>
-          <div className="flex flex-col py-8 ">
-            <div className="flex border-b border-slate-300 py-2">
-              <img src={Image} alt="" className="w-28 h-28 rounded-md " />
-              <div className="flex flex-col px-10">
-                <h3 className="text-xl font-semibold">Sample Title</h3>
-                <p className="text-slate-600">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab
-                  praesentium necessitatibus nulla nisi aperiam eligendi
-                  voluptate, vel autem fugiat deleniti.
-                </p>
-              </div>
-              <div className="flex flex-col jusify-between gap-10 items-center">
-                <MdClose className="text-2xl" />
-                <FiEdit3 className="text-xl" />
-              </div>
-            </div>
+          <div className="flex flex-col py-8 overflow-y-auto h-full ">
+            {data ? (
+              data?.map((item) => (
+                <div
+                  key={item._id}
+                  className="flex border-b justify-between border-slate-300 py-2"
+                >
+                  <div className="flex">
+                    <img
+                      src={`${import.meta.env.VITE_BACKEND_URL}${
+                        item.imageUrl
+                      }`}
+                      alt=""
+                      className="w-28 h-28 rounded-md"
+                    />
+                    <div className="flex flex-col px-10">
+                      <h3 className="text-xl font-semibold">{item.title}</h3>
+                      <p className="text-slate-600">{item.description}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col justify-between gap-10 items-center">
+                    <MdClose className="text-2xl" />
+                    <FiEdit3 className="text-xl" />
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p>Empty Items</p>
+            )}
           </div>
         </div>
       </div>
