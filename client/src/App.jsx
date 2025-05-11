@@ -1,11 +1,15 @@
 
+import { Routes,Route } from 'react-router-dom'
 import './App.css'
+import Register from './pages/Register'
 
 function App() {
   
   return (
     <>
-      <h1 className='text-3xl font-black underline '>Welcome </h1>
+      <Routes>
+        <Route path='/register' element={<Register />}  />
+      </Routes>
     </>
   )
 }
