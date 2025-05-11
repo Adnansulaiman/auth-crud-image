@@ -23,12 +23,14 @@ const register = async (req, res) => {
     });
     await newUser.save();
 
-    res.status(200).json(newUser);
+    res.status(200).json({message:"Account created successfully",user:newUser});
   } catch (error) {
     console.error("Error doing register : ",error);
     res.status(500).json({ message: "Error doing register" });
   }
 };
+
+
 
 const login = async (req, res) => {
   const { email, password } = req.body;
