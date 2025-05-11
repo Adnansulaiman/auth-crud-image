@@ -9,6 +9,27 @@ import { useRef } from "react";
 import { useEffect } from "react";
 
 const AddNew = () => {
+  // Delete functionalities
+  const handleDelete = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(
+        `${import.meta.env.VITE_BACKEND_URL}/api/blog/delete/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      fetchData(); //fetch data after delete
+    } catch (error) {
+      console.error("Delete error:", error);
+      setErrorMessage("Failed to delete item");
+      setTimeout(() => setErrorMessage(""), 2000);
+    }
+  };
+
   // Get functionalities
   const [data, setData] = useState(null);
   const fetchData = async () => {
@@ -202,7 +223,18 @@ const AddNew = () => {
                   </div>
 
                   <div className="flex flex-col justify-between gap-10 items-center">
-                    <MdClose className="text-2xl" />
+                    <MdClose
+                      className="text-2xl cursor-pointer text-red-500 "
+                      onClick={() => {
+                        if (
+                          window.confirm(
+                            "Are you sure you want to delete this item?"
+                          )
+                        ) {
+                          handleDelete(item._id);
+                        }
+                      }}
+                    />
                     <FiEdit3 className="text-xl" />
                   </div>
                 </div>
