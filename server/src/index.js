@@ -4,12 +4,13 @@ const cors = require('cors');
 const connectDB = require('./config/db.config');
 const authRoutes = require('./routes/auth.routes');
 const blogRoutes = require('./routes/blog.routes');
-
+const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(cors());
 
 app.get('/',(req,res)=>{

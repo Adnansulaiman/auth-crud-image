@@ -1,6 +1,8 @@
 import React from "react";
 import { IoSearch } from "react-icons/io5";
 import CardItem from "../components/CardItem";
+import { FaPlus } from "react-icons/fa6";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   return (
@@ -8,7 +10,14 @@ const Dashboard = () => {
       <div className="flex flex-col bg-[linear-gradient(90deg,_#efd5ff_0%,_#515ada_100%)] px-10 h-scr text-white rounded-md w-full py-4 ">
         <div className="flex flex-col border-b-3  border-white">
           <h1 className="text-6xl font-bold pt-28   ">Welcome Adnan </h1>
-          <form action="" className="flex justify-end w-full p-10 relative">
+          <div className="flex justify-between items-center">
+            
+            <Link to='/add-new' className=" flex items-center gap-2  px-10 w-1/5 py-3 rounded-full cursor-pointer bg-white text-[#515ada]">
+                <FaPlus className="text-xl" />
+                <p className="text-2xl font-semibold">Create new</p>
+            </Link>
+    
+            <form action="" className="flex justify-end w-full p-10 relative">
             <input
               type="text"
               placeholder="Search"
@@ -21,6 +30,8 @@ const Dashboard = () => {
               Search
             </button>
           </form>
+          </div>
+          
         </div>
         <div className="flex gap-4 w-full  flex-wrap">
             <CardItem />
