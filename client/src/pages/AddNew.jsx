@@ -9,6 +9,46 @@ import { useRef } from "react";
 import { useEffect } from "react";
 
 const AddNew = () => {
+  // Update functionalities
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState(null);
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const formData = new FormData();
+      formData.append("title", addData.title);
+      formData.append("description", addData.description);
+      if (file) formData.append("image", file);
+
+      const token = localStorage.getItem("token");
+
+      await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/api/blog/update/${
+          editingItem._id
+        }`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setIsEditModalOpen(false);
+      setEditingItem(null);
+      resetForm();
+      setFile(null);
+      setPreview(null);
+      fetchData(); // refresh data
+    } catch (error) {
+      console.error("Edit error:", error);
+      setErrorMessage(error.response?.data?.message || "Failed to update");
+    }
+  };
+
   // Delete functionalities
   const handleDelete = async (id) => {
     try {
@@ -235,7 +275,18 @@ const AddNew = () => {
                         }
                       }}
                     />
-                    <FiEdit3 className="text-xl" />
+                    <FiEdit3
+                      className="text-xl cursor-pointer text-blue-500"
+                      onClick={() => {
+                        setEditingItem(item);
+                        resetForm({
+                          title: item.title,
+                          description: item.description,
+                        });
+                        setPreview(`${import.meta.env.VITE_BACKEND_URL}${item.imageUrl}`);
+                        setIsEditModalOpen(true);
+                      }}
+                    />
                   </div>
                 </div>
               ))
@@ -245,6 +296,56 @@ const AddNew = () => {
           </div>
         </div>
       </div>
+      {isEditModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-white/30 z-50">
+          <div className="bg-white rounded-lg p-6 w-[500px] relative shadow-2xl">
+            <button
+              onClick={() => setIsEditModalOpen(false)}
+              className="absolute top-2 right-3 text-xl text-gray-600 hover:text-red-500"
+            >
+              <MdClose />
+            </button>
+            <h2 className="text-2xl font-bold mb-4 text-[#515ada]">
+              Edit Item
+            </h2>
+            <form onSubmit={handleEditSubmit} className="flex flex-col gap-4">
+              <input
+                type="text"
+                name="title"
+                value={addData.title}
+                onChange={handleChange}
+                placeholder="Title"
+                className="border px-3 py-2 rounded"
+              />
+              <textarea
+                name="description"
+                value={addData.description}
+                onChange={handleChange}
+                placeholder="Description"
+                className="border px-3 py-2 rounded"
+              />
+              <input
+                type="file"
+                onChange={handleFileChange}
+                className="border px-3 py-2 rounded"
+              />
+              {preview && (
+                <img
+                  src={preview}
+                  alt="Preview"
+                  className="w-32 h-32 object-cover rounded"
+                />
+              )}
+              <button
+                type="submit"
+                className="bg-[#4f57c7] hover:bg-opacity-90 text-white font-bold py-2 px-4 rounded"
+              >
+                Update
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
