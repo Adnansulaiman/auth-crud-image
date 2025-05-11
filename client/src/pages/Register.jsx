@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 
 const Register = () => {
   return (
-    <div className="w-full h-screen bg-[linear-gradient(90deg,_#efd5ff_0%,_#515ada_100%)] flex justify-center items-center">
-      <div className="flex bg-white w-2/5 h-2/3 rounded-xl shadow-2xl flex-col px-8 py-6  ">
-        <h1 className="text-4xl font-bold pb-3 text-[#4f57c7]">
+    <div className="w-full h-screen bg-[linear-gradient(90deg,_#efd5ff_0%,_#515ada_100%)] pt-10 flex justify-center items-center">
+      <div className="flex bg-white w-2/5  rounded-xl shadow-2xl flex-col px-8 py-6  ">
+        <h1 className="text-4xl  font-bold pb-3 text-[#4f57c7]">
           Create an account
         </h1>
         <form action="" className="w-full flex flex-col">
